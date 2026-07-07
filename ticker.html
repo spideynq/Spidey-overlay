@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    width:1920px; height:1080px;
+    background:transparent; overflow:hidden;
+    font-family:'Segoe UI',system-ui,sans-serif;
+  }
+  @keyframes scrollLeft { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+  /* ── TOP TICKER (standalone) ── */
+  #ticker {
+    position:fixed; top:0; left:0; width:1920px; height:36px;
+    background:#E31B23; overflow:hidden; display:flex; align-items:center;
+  }
+  .t-anchor {
+    position:absolute; top:0; bottom:0; width:38px; background:#b01018;
+    display:flex; align-items:center; justify-content:center; z-index:2; font-size:17px;
+  }
+  .t-scroll { overflow:hidden; margin:0 38px; width:100%; }
+  .t-text {
+    display:inline-block; white-space:nowrap;
+    animation:scrollLeft 28s linear infinite;
+    color:#fff; font-size:11px; font-weight:800; letter-spacing:0.18em;
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP TICKER -->
+<div id="ticker">
+  <div class="t-anchor" style="left:0">🕷️</div>
+  <div class="t-anchor" style="right:0">🕸️</div>
+  <div class="t-scroll"><div class="t-text" id="ttext"></div></div>
+</div>
+
+<script>
+  const items = ["🕷️  NOT FINANCIAL ADVICE","NOT YOUR GURU","JUST SPIDEY DOING WHAT SPIDEY DOES","TRADE AT YOUR OWN RISK","RESULTS NOT TYPICAL","🕸️  SPIDEY NQ","WATCH THE MASTER WORK","NOT FINANCIAL ADVICE","NOT YOUR GURU"];
+  const t = items.join("   ·   ") + "   ·   ";
+  document.getElementById("ttext").textContent = t + t;
+</script>
+</body>
+</html>
