@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -127,6 +128,7 @@
       <div style="display:flex;align-items:baseline;gap:5px">
         <span class="c-num" id="d-contracts">3</span>
         <span class="c-mnq">MNQ</span>
+        <span id="d-dir" style="font-size:11px;font-weight:900;letter-spacing:.08em;padding:2px 6px;border-radius:4px;margin-left:4px;background:rgba(0,168,86,.18);color:#00e87a">LONG</span>
       </div>
     </div>
     <div class="dvdr"></div>
@@ -168,6 +170,12 @@
   function applyState(s) {
     if (!s) return;
     document.getElementById("d-contracts").textContent = s.contracts ?? 3;
+
+    const dEl = document.getElementById("d-dir");
+    const isShort = s.direction === "short";
+    dEl.textContent = isShort ? "SHORT" : "LONG";
+    dEl.style.background = isShort ? "rgba(227,27,35,.18)" : "rgba(0,168,86,.18)";
+    dEl.style.color = isShort ? "#ff4455" : "#00e87a";
 
     const sess = s.sessionPnl || 0;
     const sEl = document.getElementById("d-sess");
