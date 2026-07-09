@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Spidey Controls</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    background:#06060d; color:#fff; font-family:'Segoe UI',system-ui,sans-serif;
+    min-height:100vh; padding:18px; padding-bottom:60px;
+  }
+  h1 { color:#E31B23; font-size:15px; font-weight:900; letter-spacing:.14em; margin-bottom:2px; }
+  .sub { color:#444; font-size:11px; margin-bottom:18px; }
+  .card {
+    background:#141418; border:1px solid #2a2a35; border-radius:12px;
+    padding:16px; margin-bottom:14px;
+  }
+  .lbl { color:#666; font-size:11px; letter-spacing:.12em; margin-bottom:8px; font-weight:700; }
+  .stepper { display:flex; align-items:center; justify-content:center; gap:18px; }
+  .sb {
+    background:#1e1e26; border:1px solid #2a2a35; color:#E31B23; font-size:30px;
+    font-weight:900; width:56px; height:56px; border-radius:12px; font-family:inherit;
+  }
+  .sb:active { background:rgba(227,27,35,.2); }
+  .si { font-size:36px; font-weight:900; min-width:60px; text-align:center; }
+  .dirseg { display:flex; gap:8px; }
+  .dbtn {
+    flex:1; padding:15px; border-radius:10px; border:1px solid #2a2a35;
+    background:#1e1e26; color:#666; font-size:14px; font-weight:900;
+    letter-spacing:.1em; font-family:inherit;
+  }
+  .dbtn.long.active { background:rgba(0,168,86,.18); border-color:#00a856; color:#00e87a; }
+  .dbtn.short.active { background:rgba(227,27,35,.18); border-color:#E31B23; color:#ff4455; }
+  .row2 { display:flex; gap:10px; }
+  .fg { flex:1; }
+  .fg .lbl { text-align:center; }
+  input[type=number] {
+    width:100%; background:#1e1e26; border:1px solid #2a2a35; border-radius:10px;
+    color:#fff; font-size:20px; font-weight:700; padding:14px; text-align:center;
+    outline:none; font-family:inherit;
+  }
+  input[type=number]:focus { border-color:#E31B23; }
+  .livebox {
+    text-align:center; padding:18px 0; font-size:38px; font-weight:900; color:#555;
+    transition:color .3s;
+  }
+  .btn {
+    display:block; width:100%; border:none; border-radius:10px; padding:16px;
+    font-size:14px; font-weight:800; letter-spacing:.1em; font-family:inherit;
+  }
+  .btn.close { background:#00a856; color:#fff; margin-bottom:10px; }
+  .btn.close:active { background:#008040; }
+  .btn.reset { background:none; border:1px solid #333; color:#666; }
+  .stats { display:flex; gap:10px; }
+  .stat { flex:1; text-align:center; }
+  .stat .v { font-size:22px; font-weight:900; }
+  .stat .k { color:#555; font-size:10px; letter-spacing:.1em; margin-top:2px; }
+  .status { text-align:center; font-size:11px; color:#444; margin-top:14px; }
+  .status.ok { color:#00a856; }
+  .status.bad { color:#ff4455; }
+</style>
+</head>
+<body>
+
+<h1>🕷️ SPIDEY CONTROLS</h1>
+<div class="sub">Keep this open on your phone / second screen — updates the live banner instantly.</div>
+
+<div class="card">
+  <div class="lbl">CONTRACTS</div>
+  <div class="stepper">
+    <button class="sb" onclick="adj(-1)">−</button>
+    <div class="si" id="c-val">3</div>
+    <button class="sb" onclick="adj(1)">+</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="lbl" style="text-align:center">POSITION</div>
+  <div class="dirseg">
+    <button class="dbtn long active" id="btn-long" onclick="setDir('long')">LONG</button>
+    <button class="dbtn short" id="btn-short" onclick="setDir('short')">SHORT</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="row2">
+    <div class="fg">
+      <div class="lbl">ENTRY PRICE</div>
+      <input type="number" inputmode="decimal" id="i-e" placeholder="21450.00" oninput="calc()"/>
+    </div>
+    <div class="fg">
+      <div class="lbl">CURRENT / EXIT</div>
+      <input type="number" inputmode="decimal" id="i-x" placeholder="21480.00" oninput="calc()"/>
+    </div>
+  </div>
+  <div class="livebox" id="live-pnl">—</div>
+  <button class="btn close" onclick="closeTrade()">CLOSE TRADE</button>
+</div>
+
+<div class="card">
+  <div class="stats">
+    <div class="stat"><div class="v" id="s-sess" style="color:#555">$0.00</div><div class="k">SESSION P&L</div></div>
+    <div class="stat"><div class="v" id="s-trades">0</div><div class="k">TRADES</div></div>
+    <div class="stat"><div class="v" id="s-wr">—</div><div class="k">WIN RATE</div></div>
+  </div>
+</div>
+
+<button class="btn reset" onclick="resetSession()">RESET SESSION</button>
+<div class="status" id="status">connecting…</div>
+
+<script>
+  // 1. Paste your Firebase Realtime Database URL below (no trailing slash).
+  //    Example: "https://spidey-overlay-default-rtdb.firebaseio.com"
+  const DB_URL = "https://spidey-stream-overlay-default-rtdb.firebaseio.com";
+  const PATH = "/spidey/state.json";
+
+  let state = { contracts: 3, direction: "long", livePnl: null, sessionPnl: 0, tradeCount: 0, winCount: 0 };
+
+  function syncDirButtons() {
+    document.getElementById("btn-long").classList.toggle("active", state.direction !== "short");
+    document.getElementById("btn-short").classList.toggle("active", state.direction === "short");
+  }
+
+  function setDir(d) {
+    state.direction = d;
+    syncDirButtons();
+    calc(); // recompute live P&L with the new direction and push
+  }
+
+  function fmt(v) { return v>=0?`+$${v.toFixed(2)}`:`-$${Math.abs(v).toFixed(2)}`; }
+  function col(v) { return v>0?"#00e87a":v<0?"#ff4455":"#aaa"; }
+
+  function render() {
+    document.getElementById("c-val").textContent = state.contracts;
+    const lp = document.getElementById("live-pnl");
+    if (state.livePnl===null || state.livePnl===undefined) { lp.textContent="—"; lp.style.color="#555"; }
+    else { lp.textContent=fmt(state.livePnl); lp.style.color=col(state.livePnl); }
+    const sEl = document.getElementById("s-sess");
+    sEl.textContent = state.sessionPnl===0 ? "$0.00" : fmt(state.sessionPnl);
+    sEl.style.color = state.sessionPnl===0 ? "#555" : col(state.sessionPnl);
+    document.getElementById("s-trades").textContent = state.tradeCount;
+    document.getElementById("s-wr").textContent = state.tradeCount ? `${Math.round(state.winCount/state.tradeCount*100)}%` : "—";
+  }
+
+  function push() {
+    setStatus("saving…", "");
+    fetch(DB_URL + PATH, { method:"PUT", body: JSON.stringify(state) })
+      .then(r => { if(!r.ok) throw new Error(); setStatus("synced ✓ live on stream", "ok"); })
+      .catch(() => setStatus("couldn't reach Firebase — check DB_URL", "bad"));
+  }
+
+  function setStatus(msg, cls) {
+    const el = document.getElementById("status");
+    el.textContent = msg; el.className = "status " + cls;
+  }
+
+  function adj(d) { state.contracts = Math.max(1, state.contracts + d); render(); push(); }
+
+  function calc() {
+    const e = parseFloat(document.getElementById("i-e").value);
+    const x = parseFloat(document.getElementById("i-x").value);
+    const dirMult = state.direction === "short" ? -1 : 1;
+    state.livePnl = (isNaN(e) || isNaN(x)) ? null : (x - e) * state.contracts * 2 * dirMult;
+    render(); push();
+  }
+
+  function closeTrade() {
+    const e = parseFloat(document.getElementById("i-e").value);
+    const x = parseFloat(document.getElementById("i-x").value);
+    if (isNaN(e) || isNaN(x)) return;
+    const dirMult = state.direction === "short" ? -1 : 1;
+    const pnl = (x - e) * state.contracts * 2 * dirMult;
+    state.sessionPnl += pnl;
+    state.tradeCount += 1;
+    if (pnl > 0) state.winCount += 1;
+    state.livePnl = null;
+    document.getElementById("i-e").value = "";
+    document.getElementById("i-x").value = "";
+    render(); push();
+  }
+
+  function resetSession() {
+    if (!confirm("Reset session P&L, trade count, and win rate?")) return;
+    state.sessionPnl = 0; state.tradeCount = 0; state.winCount = 0; state.livePnl = null;
+    render(); push();
+  }
+
+  // Load current state on open (so refreshing your phone doesn't lose sync)
+  function load() {
+    if (!DB_URL || DB_URL.indexOf("PASTE_YOUR") === 0) { setStatus("set DB_URL first", "bad"); return; }
+    fetch(DB_URL + PATH).then(r => r.json()).then(s => {
+      if (s) state = Object.assign(state, s);
+      render(); syncDirButtons(); setStatus("synced ✓ live on stream", "ok");
+    }).catch(() => setStatus("couldn't reach Firebase — check DB_URL", "bad"));
+  }
+
+  render();
+  syncDirButtons();
+  load();
+</script>
+</body>
+</html>
