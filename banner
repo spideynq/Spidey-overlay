@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    width:1920px; height:1080px;
+    background:transparent; overflow:hidden;
+    font-family:'Segoe UI',system-ui,sans-serif;
+  }
+  @keyframes redPulse { 0%,100%{box-shadow:0 0 0 0 rgba(227,27,35,.9)} 50%{box-shadow:0 0 0 9px rgba(227,27,35,0)} }
+
+  /* ── BOTTOM BANNER (standalone) ── */
+  #banner {
+    position:fixed; bottom:0; left:0; width:1920px;
+    background:linear-gradient(90deg,#06060d 0%,#0b0917 50%,#06060d 100%);
+    border-top:3px solid #E31B23;
+    display:flex; align-items:stretch; min-height:82px; overflow:hidden;
+  }
+  .web { position:absolute; bottom:0; opacity:0.13; pointer-events:none; }
+
+  /* Discord Left */
+  .d-left { display:flex; flex-direction:column; flex-shrink:0; }
+  .d-strip {
+    background:rgba(88,101,242,.13); border-bottom:1px solid rgba(88,101,242,.2);
+    padding:5px 18px; display:flex; align-items:center; gap:7px;
+  }
+  .d-main-left {
+    flex:1; padding:8px 18px 8px 20px; display:flex; align-items:center; gap:10px;
+    background:rgba(88,101,242,.1); border-right:1px solid rgba(88,101,242,.15);
+  }
+
+  /* Brand */
+  #brand {
+    padding:10px 16px; display:flex; flex-direction:column; justify-content:center; gap:2px;
+    border-right:1px solid rgba(255,255,255,.05); flex-shrink:0;
+  }
+  .b-row { display:flex; align-items:center; gap:5px; }
+  .b-s { color:#E31B23; font-size:17px; font-weight:900; letter-spacing:.06em; line-height:1; }
+  .b-n { background:#fff; color:#1A3A8F; font-size:17px; font-weight:900; padding:0 4px; border-radius:3px; line-height:1.2; }
+  .b-tag { color:#555; font-size:9px; letter-spacing:.1em; font-style:italic; }
+
+  /* Trading */
+  #trading { flex:1; padding:10px 16px; display:flex; align-items:center; gap:14px; }
+  .live-dot { width:9px; height:9px; border-radius:50%; background:#E31B23; animation:redPulse 1.6s ease-in-out infinite; flex-shrink:0; }
+  .dvdr { width:1px; height:28px; background:rgba(255,255,255,.07); flex-shrink:0; }
+  .lbl { color:#444; font-size:9px; letter-spacing:.15em; margin-bottom:2px; }
+  .c-num { color:#fff; font-size:26px; font-weight:900; line-height:1; }
+  .c-mnq { color:#E31B23; font-size:22px; font-weight:900; line-height:1; letter-spacing:.04em; }
+  .pnl-v { font-size:18px; font-weight:900; transition:color .4s; }
+  .lpnl-v { font-size:16px; font-weight:900; transition:color .4s; }
+
+  /* Discord Right */
+  .d-right { display:flex; align-items:stretch; flex-shrink:0; border-left:1px solid rgba(88,101,242,.15); }
+  .d-r1 {
+    padding:10px 18px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+    background:rgba(88,101,242,.12); border-right:1px solid rgba(88,101,242,.15); min-width:90px;
+  }
+  .d-r2 {
+    padding:10px 16px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+    background:rgba(88,101,242,.06); min-width:78px;
+  }
+
+  input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; }
+  input[type=number] { -moz-appearance:textfield; }
+</style>
+</head>
+<body>
+
+<!-- BOTTOM BANNER -->
+<div id="banner">
+  <svg class="web" style="left:0" width="160" height="90" viewBox="0 0 160 90" fill="none">
+    <line x1="0" y1="90" x2="200" y2="0" stroke="white" stroke-width=".8"/>
+    <line x1="0" y1="90" x2="130" y2="0" stroke="white" stroke-width=".8"/>
+    <line x1="0" y1="90" x2="80" y2="0" stroke="white" stroke-width=".8"/>
+    <line x1="0" y1="90" x2="35" y2="0" stroke="white" stroke-width=".8"/>
+    <line x1="0" y1="90" x2="0" y2="0" stroke="white" stroke-width=".8"/>
+    <path d="M 0,65 Q 45,48 90,18" stroke="white" stroke-width=".65" fill="none"/>
+    <path d="M 0,42 Q 60,30 120,8" stroke="white" stroke-width=".65" fill="none"/>
+    <path d="M 0,22 Q 40,14 80,4" stroke="white" stroke-width=".65" fill="none"/>
+  </svg>
+  <svg class="web" style="right:0;transform:scaleX(-1)" width="160" height="90" viewBox="0 0 160 90" fill="none">
+    <line x1="0" y1="90" x2="200" y2="0" stroke="white" stroke-width=".8"/>
+    <line x1="0" y1="90" x2="130" y2="0" stroke="white" stroke-width=".8"/>
+    <line x1="0" y1="90" x2="80" y2="0" stroke="white" stroke-width=".8"/>
+    <line x1="0" y1="90" x2="35" y2="0" stroke="white" stroke-width=".8"/>
+    <path d="M 0,65 Q 45,48 90,18" stroke="white" stroke-width=".65" fill="none"/>
+    <path d="M 0,42 Q 60,30 120,8" stroke="white" stroke-width=".65" fill="none"/>
+  </svg>
+
+  <!-- DISCORD LEFT -->
+  <div class="d-left">
+    <div class="d-strip">
+      <svg width="14" height="11" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.4a40.7 40.7 0 0 0-1.8 3.6 54.2 54.2 0 0 0-16.2 0A40.7 40.7 0 0 0 25.6.4 58.5 58.5 0 0 0 10.9 5C1.6 18.6-.9 31.9.3 45a58.9 58.9 0 0 0 17.9 9 44.2 44.2 0 0 0 3.8-6.2 38.4 38.4 0 0 1-6-2.9c.5-.4 1-.7 1.5-1.1a42 42 0 0 0 35.9 0c.5.4 1 .8 1.5 1.1a38.4 38.4 0 0 1-6 2.9 44.2 44.2 0 0 0 3.8 6.2 58.7 58.7 0 0 0 17.9-9C72 29.6 68.5 16.4 60.1 4.9ZM23.7 37c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.4 3.3 6.4 7.2 0 3.9-2.8 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.4 3.3 6.4 7.2 0 3.9-2.8 7.1-6.4 7.1Z" fill="#5865F2"/></svg>
+      <span style="color:#5865F2;font-size:10px;font-weight:800;letter-spacing:.12em">JOIN DISCORD</span>
+      <span style="color:#444;font-size:9px">· LINK IN BIO</span>
+    </div>
+    <div class="d-main-left">
+      <svg width="28" height="22" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.4a40.7 40.7 0 0 0-1.8 3.6 54.2 54.2 0 0 0-16.2 0A40.7 40.7 0 0 0 25.6.4 58.5 58.5 0 0 0 10.9 5C1.6 18.6-.9 31.9.3 45a58.9 58.9 0 0 0 17.9 9 44.2 44.2 0 0 0 3.8-6.2 38.4 38.4 0 0 1-6-2.9c.5-.4 1-.7 1.5-1.1a42 42 0 0 0 35.9 0c.5.4 1 .8 1.5 1.1a38.4 38.4 0 0 1-6 2.9 44.2 44.2 0 0 0 3.8 6.2 58.7 58.7 0 0 0 17.9-9C72 29.6 68.5 16.4 60.1 4.9ZM23.7 37c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.4 3.3 6.4 7.2 0 3.9-2.8 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.4 3.3 6.4 7.2 0 3.9-2.8 7.1-6.4 7.1Z" fill="#5865F2"/></svg>
+      <div>
+        <div style="color:#fff;font-size:13px;font-weight:900;line-height:1">Join Us</div>
+        <div style="color:#5865F2;font-size:9px;font-weight:700;margin-top:2px">LINK IN BIO ↗</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRAND -->
+  <div id="brand">
+    <div class="b-row">
+      <span style="font-size:17px">🕷️</span>
+      <span class="b-s">SPIDEY</span>
+      <span class="b-n">NQ</span>
+    </div>
+    <div class="b-tag">"You're watching a master at work."</div>
+  </div>
+
+  <!-- TRADING INFO -->
+  <div id="trading">
+    <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+      <div class="live-dot"></div>
+      <span style="color:#E31B23;font-size:10px;font-weight:800;letter-spacing:.14em">LIVE</span>
+    </div>
+    <div class="dvdr"></div>
+    <div>
+      <div class="lbl">NOW TRADING</div>
+      <div style="display:flex;align-items:baseline;gap:5px">
+        <span class="c-num" id="d-contracts">3</span>
+        <span class="c-mnq">MNQ</span>
+      </div>
+    </div>
+    <div class="dvdr"></div>
+    <div>
+      <div class="lbl">SESSION P&L</div>
+      <div class="pnl-v" id="d-sess" style="color:#333">—</div>
+    </div>
+    <div class="dvdr" id="d-ldvdr" style="display:none"></div>
+    <div id="d-lblock" style="display:none">
+      <div class="lbl">LIVE TRADE</div>
+      <div class="lpnl-v" id="d-live">—</div>
+    </div>
+  </div>
+
+  <!-- DISCORD RIGHT -->
+  <div class="d-right">
+    <div class="d-r1">
+      <svg width="26" height="20" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.4a40.7 40.7 0 0 0-1.8 3.6 54.2 54.2 0 0 0-16.2 0A40.7 40.7 0 0 0 25.6.4 58.5 58.5 0 0 0 10.9 5C1.6 18.6-.9 31.9.3 45a58.9 58.9 0 0 0 17.9 9 44.2 44.2 0 0 0 3.8-6.2 38.4 38.4 0 0 1-6-2.9c.5-.4 1-.7 1.5-1.1a42 42 0 0 0 35.9 0c.5.4 1 .8 1.5 1.1a38.4 38.4 0 0 1-6 2.9 44.2 44.2 0 0 0 3.8 6.2 58.7 58.7 0 0 0 17.9-9C72 29.6 68.5 16.4 60.1 4.9ZM23.7 37c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.4 3.3 6.4 7.2 0 3.9-2.8 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.4 3.3 6.4 7.2 0 3.9-2.8 7.1-6.4 7.1Z" fill="#5865F2"/></svg>
+      <span style="color:#fff;font-size:11px;font-weight:900">DISCORD</span>
+      <span style="color:#5865F2;font-size:9px;font-weight:700">LINK IN BIO ↗</span>
+    </div>
+    <div class="d-r2">
+      <span style="font-size:15px">🕸️</span>
+      <span style="color:#5865F2;font-size:9px;font-weight:800">DISCORD</span>
+      <span style="color:#444;font-size:8px">COMMUNITY</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── LIVE SYNC (reads state pushed from control.html via Firebase) ──
+  // 1. Paste your Firebase Realtime Database URL below (no trailing slash).
+  //    Example: "https://spidey-overlay-default-rtdb.firebaseio.com"
+  const DB_URL = "https://spidey-stream-overlay-default-rtdb.firebaseio.com";
+
+  function fmt(v) { return v>=0?`+$${v.toFixed(2)}`:`-$${Math.abs(v).toFixed(2)}`; }
+  function col(v) { return v>0?"#00e87a":v<0?"#ff4455":"#aaa"; }
+
+  function applyState(s) {
+    if (!s) return;
+    document.getElementById("d-contracts").textContent = s.contracts ?? 3;
+
+    const sess = s.sessionPnl || 0;
+    const sEl = document.getElementById("d-sess");
+    sEl.textContent = sess === 0 ? "—" : fmt(sess);
+    sEl.style.color = sess === 0 ? "#333" : col(sess);
+
+    const be = document.getElementById("d-live"),
+          bl = document.getElementById("d-lblock"),
+          dv = document.getElementById("d-ldvdr");
+    const live = s.livePnl;
+    if (live === null || live === undefined) {
+      bl.style.display = "none"; dv.style.display = "none";
+    } else {
+      be.textContent = fmt(live); be.style.color = col(live);
+      bl.style.display = ""; dv.style.display = "";
+    }
+  }
+
+  function refetch() {
+    fetch(DB_URL + "/spidey/state.json").then(r => r.json()).then(applyState).catch(()=>{});
+  }
+
+  function connect() {
+    if (!DB_URL || DB_URL.indexOf("PASTE_YOUR") === 0) return; // not configured yet
+    refetch();
+    const es = new EventSource(DB_URL + "/spidey/state.json");
+    es.addEventListener("put", e => { try { applyState(JSON.parse(e.data).data); } catch(_) {} });
+    es.addEventListener("patch", refetch);
+    es.onerror = () => {}; // EventSource auto-reconnects
+  }
+
+  connect();
+</script>
+</body>
+</html>
